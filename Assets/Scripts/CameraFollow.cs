@@ -1,32 +1,17 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
-    private Camera camera;
-    public Transform target;
+    public float cameraSpeed = 5.0f;
 
-    public float smoothSpeed = 3;
-    public Vector2 offset;
-    public float limitMinX, limitMaxX, limitMinY, limitMaxY;
-    float cameraHalfWidth, cameraHalfHeight;
+    public GameObject player;
 
-    private void Awake()
+    private void Update()
     {
-        camera = Camera.main;
-    }
-
-    private void Start()
-    {
-        cameraHalfWidth = camera.aspect * camera.orthographicSize;
-        cameraHalfHeight = camera.orthographicSize;
-    }
-
-    private void LateUpdate()
-    {
-        Vector3 desiredPosition = new Vector3(
-            Mathf.Clamp(target.position.x + offset.x, limitMinX + cameraHalfWidth, limitMaxX - cameraHalfWidth),   // X
-            Mathf.Clamp(target.position.y + offset.y, limitMinY + cameraHalfHeight, limitMaxY - cameraHalfHeight), // Y
-            -10);                                                                                                  // Z
-        transform.position = Vector3.Lerp(transform.position, desiredPosition, Time.deltaTime * smoothSpeed);
+        Vector3 dir = player.transform.position - this.transform.position;
+        Vector3 moveVector = new Vector3(dir.x * cameraSpeed * Time.deltaTime, dir.y * cameraSpeed * Time.deltaTime, 0.0f);
+        this.transform.Translate(moveVector);
     }
 }
